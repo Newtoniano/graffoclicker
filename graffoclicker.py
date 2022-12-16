@@ -2,39 +2,64 @@ import random
 import time
 
 import pyautogui
-import pymsgbox
 
 
 # Use mouseposition.py to find the correct coordinates
 def taskClicker():
-    # scrollbar position
-    pyautogui.moveTo(100, 150, duration=round(random.random(), 1))
-    # set scroll lenght
-    pyautogui.scroll(-10)
+    pyautogui.click(x=800, y=500)
+    # Scroll until bottom of list
+    pyautogui.moveTo(1218, 510, duration=round(random.random(), 1))
+    pyautogui.scroll(-6000)
     # None apply checkbox position
-    pyautogui.moveTo(300, 450, duration=round(random.random(), 1))
+    pyautogui.moveTo(965, 717, duration=round(random.random(), 1))
     pyautogui.click()
-    # Top right menu position
-    pyautogui.moveTo(350, 600, duration=round(random.random(), 1))
+    # Top right menu click
+    pyautogui.moveTo(1520, 264, duration=round(random.random(), 1))
     pyautogui.click()
-    # Send task position
-    pyautogui.moveTo(200, 180, duration=round(random.random(), 1))
+    # Click N/A in top right menu
+    pyautogui.moveTo(1520, 362, duration=round(random.random(), 1))
+    pyautogui.click()
+    # Click Submit task
+    pyautogui.moveTo(1548, 513, duration=round(random.random(), 1))
     pyautogui.click()
 
 
-startBot = pymsgbox.confirm(
-    "Do you want to start Graffoclicker? Please be on the task page when you start."
+startBot = pyautogui.confirm(
+    "Do you want to start Graffoclicker? Please be on the task window when you start."
 )
 if startBot == "OK":
     # TODO: runtime stats overlay
-    # TODO: maybe logging to see current status in console
-    tasksDone = 0
-    try:
-        while True:
-            taskClicker()
-            tasksDone += 1
-            pyautogui.hotkey("alt", "tab")
-            time.sleep(random.randint(10, 180))  # Random 10s-3m delay between each run
-    except KeyboardInterrupt:
-        print(f"Graffoclicker stopped. {tasksDone} tasks submitted.")
-        pymsgbox.alert(f"Graffoclicker stopped. {tasksDone} tasks submitted.")
+    targetDuration = int(pyautogui.prompt("Insert desired duration in minutes")) * 60
+    if targetDuration:
+        # Make window active again after clicking on the prompt
+        pyautogui.click()
+
+        tasksDone = 0
+        startTime = time.time()
+
+        try:
+            while True:
+                currentTime = time.time()
+                if currentTime - startTime > targetDuration:
+                    break
+                taskClicker()
+                tasksDone += 1
+                pyautogui.hotkey("alt", "tab")
+                time.sleep(
+                    random.randint(30, 180)
+                )  # Random 30s-3m delay between each run
+                pyautogui.hotkey("alt", "tab")
+
+            print(
+                f"Graffoclicker finished running at {time.localtime()} after {targetDuration} minutes. {tasksDone} tasks have been submitted."
+            )
+            pyautogui.alert(
+                f"Graffoclicker finished running at {time.localtime()} after {targetDuration} minutes. {tasksDone} tasks have been submitted."
+            )
+        except KeyboardInterrupt:
+            print(
+                f"Graffoclicker stopped early. {tasksDone} tasks have been submitted."
+            )
+            pyautogui.alert(
+                f"Graffoclicker stopped early. {tasksDone} tasks have been submitted."
+            )
