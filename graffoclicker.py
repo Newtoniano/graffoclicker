@@ -22,12 +22,12 @@ def taskClicker():
     pyautogui.click()
 
 
-tasksDone = 0
 startBot = pymsgbox.confirm(
     "Do you want to start Graffoclicker? Please be on the task page when you start."
 )
 if startBot == "OK":
     # TODO: runtime stats overlay
+    # TODO: maybe logging to see current status in console
     tasksDone = 0
     try:
         while True:
